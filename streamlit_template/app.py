@@ -1,10 +1,12 @@
 import numpy as np
 import streamlit as st
 from toolkit.queries import (
-    query_entity_distribution,
-    query_project_downloads,
-    query_project_sizes,
-    query_unique_users,
+    query_annual_project_downloads,
+    query_annual_unique_users,
+    query_annual_downloads,
+    query_annual_cost,
+    query_monthly_download_trends,
+    query_top_annotations,
 )
 from toolkit.utils import get_data_from_snowflake
 from toolkit.widgets import plot_download_sizes, plot_unique_users_trend
@@ -38,32 +40,34 @@ def main():
         st.markdown("## Overview")
 
         # Data retrieval:
-        project_downloads_df = get_data_from_snowflake(query_project_downloads())
-        project_sizes_df = get_data_from_snowflake(query_project_sizes())
+        annual_project_downloads_df = get_data_from_snowflake(query_annual_project_downloads())
+        annual_unique_users_df = get_data_from_snowflake(query_annual_unique_users())
+        annual_downloads_df = get_data_from_snowflake(query_annual_downloads())
+        annual_cost_df = get_data_from_snowflake(query_annual_cost())
 
         # Data transformation:
-        total_data_size = round(sum(project_sizes_df['PROJECT_SIZE_IN_GIB']), 2)
+        total_data_size = round(sum(annual_project_downloads_df['TOTAL_PROJECT_SIZE_IN_TIB']), 2)
 
         # Data visualization:
         col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
-        col1.metric("Total Storage Occupied", f"{total_data_size} GB")
-        col2.metric("Annual Downloads (Total)", f"2 GB")
-        col3.metric("Annual Downloads (External)", f"2 GB")
-        col4.metric("Annual Cost", "102,000 USD")
+        col1.metric("Total Storage Occupied", f"{total_data_size} TiB")
+        col2.metric("Annual Unique Users", f"{annual_unique_users_df['ANNUAL_UNIQUE_USERS'][0]} TiB")
+        col3.metric("Annual Downloads", f"{round(annual_downloads_df['ANNUAL_DOWNLOADS_IN_TIB'][0], 2)} TiB")
+        col4.metric("Annual Cost", f"{round(annual_cost_df['ANNUAL_COST'][0], 2)} USD")
 
         # ---------------- Row 3: Unique Users Trends -------------------------
         
         st.markdown("#### User Trends")
         
         # Data retrieval:
-        unique_users_df = get_data_from_snowflake(query_unique_users(months_back=12))
+        unique_users_df = get_data_from_snowflake(query_monthly_download_trends())
         
         # Data visualization:
         st.plotly_chart(plot_unique_users_trend(unique_users_df))
     
         # --------------- Row 2: Project Sizes and Downloads -----------------
         # Data visualization:
-        st.plotly_chart(plot_download_sizes(project_downloads_df, project_sizes_df))
+        st.plotly_chart(plot_download_sizes(annual_project_downloads_df))
 
     with side_col:
 

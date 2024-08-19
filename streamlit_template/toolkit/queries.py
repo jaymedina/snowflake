@@ -153,33 +153,6 @@ def query_monthly_download_trends():
     """
 
 
-def query_current_project_sizes():
-    """Return the annual project sizes for a given year."""
-
-    return f"""
-    WITH
-    htan_project_ids AS (
-
-        SELECT
-            DISTINCT cast(scopes.value as integer) as project_id
-        FROM
-            synapse_data_warehouse.synapse.node_latest,
-            LATERAL flatten(input => node_latest.scope_ids) scopes
-        WHERE
-            id = '20446927'
-
-    )
-    SELECT
-        count(DISTINCT user_id) as annual_unique_users
-    FROM
-        synapse_data_warehouse.synapse.filedownload
-    WHERE
-        project_id in (SELECT project_id FROM htan_project_ids)
-    AND
-        RECORD_DATE >= DATEADD(month, -12, CURRENT_DATE);
-    """
-
-
 def query_annual_project_downloads():
     """Return the annual project downloads for a given year."""
 
