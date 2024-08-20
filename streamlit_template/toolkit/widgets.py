@@ -35,7 +35,7 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
                 line=dict(width=2),
                 opacity=0.6,
                 hoverinfo="x+y+name",
-                hovertemplate="<b>Date</b>: %{x}<br><b>Unique Users</b>: %{y}<extra></extra>",
+                hovertemplate="<b>Date</b>: %{x}<br><b>Unique User Downloads</b>: %{y}<extra></extra>",
                 showlegend=True,
                 visible=True,
             )
@@ -64,7 +64,7 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
     )
     fig.update_layout(
         xaxis_title="Month",
-        yaxis_title="Unique Users",
+        yaxis_title="Unique User Downloads",
         title="Click a project to hide its trend",
         width=width,
         height=height,
@@ -72,39 +72,43 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
     return fig
 
 
-def plot_download_sizes(download_sizes_df, project_sizes_df, width=2000):
+def plot_download_sizes(df, width=2000):
+    # Convert project size from TiB to GiB for better comparison
+    df["PROJECT_SIZE_IN_GIB"] = df["TOTAL_PROJECT_SIZE_IN_TIB"] 
+    df["TOTAL_DOWNLOADS_GIB"] = df["ANNUAL_DOWNLOADS_IN_TIB"] 
 
-    content_size_mapping = project_sizes_df.set_index("PROJECT_ID")[
-        "PROJECT_SIZE_IN_GIB"
-    ].to_dict()
-    download_sizes_df["PROJECT_SIZE_IN_GIB"] = download_sizes_df["PROJECT_ID"].map(
-        content_size_mapping
-    )
+    # Generate the x-axis labels based on project_id
+    x = [f"project_{str(xx)}" for xx in df["PROJECT_ID"]]
 
-    x = [f"project_{str(xx)}" for xx in download_sizes_df["PROJECT_ID"]]
-    download_sizes_df = download_sizes_df.sort_values(by="TOTAL_DOWNLOADS")
+    # Sort the DataFrame by total downloads for ordered display
+    df = df.sort_values(by="TOTAL_DOWNLOADS_GIB")
+
+    # Create the bar chart using Plotly
     fig = go.Figure(
         data=[
             go.Bar(
                 x=x,
-                y=download_sizes_df["TOTAL_DOWNLOADS"],
+                y=df["TOTAL_DOWNLOADS_GIB"],
                 marker=dict(
-                    color=download_sizes_df["PROJECT_SIZE_IN_GIB"],
-                    colorscale="Reds",
-                    colorbar=dict(title="Project Size (GB)"),
+                    color=df["PROJECT_SIZE_IN_GIB"],
+                    colorscale="emrld",
+                    colorbar=dict(title="Project Size (TiB)"),
                 ),
                 hovertemplate="<b>Project Name:</b> %{x}<br>"
-                + "<b>Download Size:</b> %{y} GB<br>"
-                + "<b>Project Size:</b> %{marker.color:.2f} GB<extra></extra>",
+                + "<b>Download Size:</b> %{y:.2f} TiB<br>"
+                + "<b>Project Size:</b> %{marker.color:.2f} TiB<extra></extra>",
             )
         ]
     )
+
+    # Update the layout of the plot
     fig.update_layout(
         xaxis_title="Project Name",
-        yaxis_title="Download Size (GB)",
+        yaxis_title="Download Size (TiB)",
         title="Download Size from Unique User Downloads (Ordered)",
         width=width,
     )
+    
     return fig
 
 

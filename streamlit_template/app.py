@@ -7,6 +7,7 @@ from toolkit.queries import (
     query_annual_cost,
     query_monthly_download_trends,
     query_top_annotations,
+    query_entity_distribution
 )
 from toolkit.utils import get_data_from_snowflake
 from toolkit.widgets import plot_download_sizes, plot_unique_users_trend
@@ -32,7 +33,7 @@ with st.sidebar:
 
 def main():
 
-    center_col, side_col = st.columns((4., 1), gap='medium')
+    center_col, side_col = st.columns((4., 2), gap='medium')
 
     with center_col:
         # --------------- Row 1: Overview Cards -------------------------
@@ -57,7 +58,7 @@ def main():
 
         # ---------------- Row 3: Unique Users Trends -------------------------
         
-        st.markdown("#### User Trends")
+        st.markdown("#### Download Trends")
         
         # Data retrieval:
         unique_users_df = get_data_from_snowflake(query_monthly_download_trends())
@@ -71,7 +72,37 @@ def main():
 
     with side_col:
 
-        # --------------- Row 1: Overview Cards -------------------------
+        # --------------- Row 1: Top Annotations -------------------------
+
+        st.markdown("#### Top Annotations")
+
+        # Data retrieval:
+        top_annotations_df = get_data_from_snowflake(query_top_annotations())
+
+        # Data visualization:
+        st.dataframe(top_annotations_df,
+                 column_order=("COMPONENT_NAME", "OCCURRENCES", "NUMBER_OF_UNIQUE_DOWNLOADS"),
+                 hide_index=True,
+                 width=None,
+                 column_config={
+                    "COMPONENT_NAME": st.column_config.TextColumn(
+                        "Annotation",
+                    ),
+                    "OCCURRENCES": st.column_config.ProgressColumn(
+                        "Occurence",
+                        format="%f",
+                        min_value=0,
+                        max_value=max(top_annotations_df["OCCURRENCES"]),
+                     ),
+                    "NUMBER_OF_UNIQUE_DOWNLOADS": st.column_config.ProgressColumn(
+                        "Unique Downloads",
+                        format="%f",
+                        min_value=0,
+                        max_value=max(top_annotations_df["NUMBER_OF_UNIQUE_DOWNLOADS"]),
+                     )}
+                 )
+
+        # --------------- Row 2: Entity Distribution -------------------------
 
         st.markdown("#### Entity Distribution")
 
