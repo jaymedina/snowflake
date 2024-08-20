@@ -14,7 +14,7 @@ from toolkit.widgets import plot_download_sizes, plot_unique_users_trend
 
 # Configure the layout of the Streamlit app page
 st.set_page_config(layout="wide",
-                   page_title="HTAN Analytics",
+                   page_title="Program Analytics",
                    page_icon=":bar_chart:",
                    initial_sidebar_state="expanded")
 
@@ -26,12 +26,20 @@ with open("style.css") as f:
 with st.sidebar:
     st.title("HTAN Usage Metrics")
     
+    program_list = ["HTAN", "NF"]
+    selected_program = st.selectbox("Select a program to view metrics for...", program_list)
+
     year_list = [2024, 2023, 2022, 2021, 2020, 2019]
     selected_year = st.selectbox("Select a year to view metrics for...", year_list)
 
+    if selected_program == "HTAN":
+        program_id = 20446927
+    elif selected_program == "NF":
+        program_id = 16858331
+
     st.write("For questions or comments, please contact jenny.medina@sagebase.org.")
 
-def main(selected_year):
+def main(selected_year, program_id):
 
     center_col, side_col = st.columns((4., 2), gap='medium')
 
@@ -41,10 +49,10 @@ def main(selected_year):
         st.markdown("## Overview")
 
         # Data retrieval:
-        annual_project_downloads_df = get_data_from_snowflake(query_annual_project_downloads(selected_year))
-        annual_unique_users_df = get_data_from_snowflake(query_annual_unique_users(selected_year))
-        annual_downloads_df = get_data_from_snowflake(query_annual_downloads(selected_year))
-        annual_cost_df = get_data_from_snowflake(query_annual_cost())
+        annual_project_downloads_df = get_data_from_snowflake(query_annual_project_downloads(selected_year, program_id))
+        annual_unique_users_df = get_data_from_snowflake(query_annual_unique_users(selected_year, program_id))
+        annual_downloads_df = get_data_from_snowflake(query_annual_downloads(selected_year, program_id))
+        annual_cost_df = get_data_from_snowflake(query_annual_cost(program_id))
 
         # Data transformation:
         total_data_size = round(sum(annual_project_downloads_df['TOTAL_PROJECT_SIZE_IN_TIB']), 2)
@@ -61,7 +69,7 @@ def main(selected_year):
         st.markdown("## Download Trends")
         
         # Data retrieval:
-        unique_users_df = get_data_from_snowflake(query_monthly_download_trends(selected_year))
+        unique_users_df = get_data_from_snowflake(query_monthly_download_trends(selected_year, program_id))
         
         # Data visualization:
         st.plotly_chart(plot_unique_users_trend(unique_users_df))
@@ -77,7 +85,7 @@ def main(selected_year):
         st.markdown("## Annotations & Entities")
 
         # Data retrieval:
-        top_annotations_df = get_data_from_snowflake(query_top_annotations(selected_year))
+        top_annotations_df = get_data_from_snowflake(query_top_annotations(selected_year, program_id))
 
         # Data visualization:
         st.dataframe(top_annotations_df,
@@ -107,7 +115,7 @@ def main(selected_year):
         #st.markdown("#### Entity Distribution")
 
         # Data retrieval:
-        entity_distribution_df = get_data_from_snowflake(query_entity_distribution())
+        entity_distribution_df = get_data_from_snowflake(query_entity_distribution(program_id))
 
         # Data visualization:
         st.dataframe(entity_distribution_df,
@@ -128,4 +136,4 @@ def main(selected_year):
 
 
 if __name__ == "__main__":
-    main(selected_year)
+    main(selected_year, program_id)

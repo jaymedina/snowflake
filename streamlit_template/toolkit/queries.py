@@ -1,4 +1,4 @@
-def query_annual_unique_users(year):
+def query_annual_unique_users(year, program_id):
     """Return the number of unique users for a given year."""
 
     return f"""
@@ -11,7 +11,7 @@ def query_annual_unique_users(year):
             synapse_data_warehouse.synapse.node_latest,
             LATERAL flatten(input => node_latest.scope_ids) scopes
         WHERE
-            id = '20446927'
+            id = '{program_id}'
 
     )
     SELECT
@@ -25,7 +25,7 @@ def query_annual_unique_users(year):
     """
 
 
-def query_annual_downloads(year):
+def query_annual_downloads(year, program_id):
     """Return the annual downloads (in TiB) for a given year."""
 
     return f"""
@@ -38,7 +38,7 @@ def query_annual_downloads(year):
             synapse_data_warehouse.synapse.node_latest,
             LATERAL flatten(input => node_latest.scope_ids) scopes
         WHERE
-            id = '20446927'
+            id = '{program_id}'
 
     ),
     file_handle_ids AS (
@@ -61,7 +61,7 @@ def query_annual_downloads(year):
     """
 
 
-def query_annual_cost():
+def query_annual_cost(program_id):
     """Return the annual cost for a given year."""
 
     return f"""
@@ -72,7 +72,7 @@ def query_annual_cost():
         synapse_data_warehouse.synapse.node_latest,
         LATERAL flatten(input => node_latest.scope_ids) scopes
     WHERE
-        id = 20446927
+        id = {program_id}
     ), price_per_year AS (
         SELECT
             CASE
@@ -100,7 +100,7 @@ def query_annual_cost():
     """
 
 
-def query_monthly_download_trends(year):
+def query_monthly_download_trends(year, program_id):
     """Return the monthly download trends for a given year."""
 
     return f"""
@@ -111,7 +111,7 @@ def query_monthly_download_trends(year):
             synapse_data_warehouse.synapse.node_latest,
             LATERAL FLATTEN(input => node_latest.scope_ids) scopes
         WHERE
-            id = 20446927
+            id = {program_id}
     ),
     project_files AS (
         SELECT
@@ -153,7 +153,7 @@ def query_monthly_download_trends(year):
     """
 
 
-def query_annual_project_downloads(year):
+def query_annual_project_downloads(year, program_id):
     """Return the annual project downloads for a given year."""
 
     return f"""
@@ -165,7 +165,7 @@ def query_annual_project_downloads(year):
             synapse_data_warehouse.synapse.node_latest,
             LATERAL flatten(input => node_latest.scope_ids) scopes
         WHERE
-            id = '20446927'
+            id = '{program_id}'
     ),
     file_handle_ids AS (
         SELECT
@@ -223,7 +223,7 @@ def query_annual_project_downloads(year):
     """
 
 
-def query_top_annotations(year):
+def query_top_annotations(year, program_id):
     """Return the top annotations for HTAN for a given year."""
 
     return f"""
@@ -234,7 +234,7 @@ def query_top_annotations(year):
         synapse_data_warehouse.synapse.node_latest,
         LATERAL flatten(input => node_latest.scope_ids) scopes
     WHERE
-        id = 20446927
+        id = {program_id}
     ), dedup_downloads AS (
         SELECT
             DISTINCT filedownload.user_id, 
@@ -285,7 +285,7 @@ def query_top_annotations(year):
     """
 
 
-def query_entity_distribution(synapse_id=20446927):
+def query_entity_distribution(program_id):
     """Returns the number of files for a given project (synapse_id)."""
 
     return f"""
@@ -297,7 +297,7 @@ def query_entity_distribution(synapse_id=20446927):
             synapse_data_warehouse.synapse.node_latest,
             lateral flatten(input => node_latest.scope_ids) scopes
         where
-            id = {synapse_id}
+            id = {program_id}
     )
     SELECT
         node_type,
