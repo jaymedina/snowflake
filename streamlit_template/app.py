@@ -24,7 +24,7 @@ with open("style.css") as f:
 
 # Setting up the sidebar and interactive user interface
 with st.sidebar:
-    st.title("HTAN Usage Metrics")
+    st.title("Sage Internal Data Catalog")
     
     program_list = ["HTAN", "NF"]
     selected_program = st.selectbox("Select a program to view metrics for...", program_list)
