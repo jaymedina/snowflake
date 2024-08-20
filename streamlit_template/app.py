@@ -31,7 +31,7 @@ with st.sidebar:
 
     st.write("For questions or comments, please contact jenny.medina@sagebase.org.")
 
-def main():
+def main(selected_year):
 
     center_col, side_col = st.columns((4., 2), gap='medium')
 
@@ -41,9 +41,9 @@ def main():
         st.markdown("## Overview")
 
         # Data retrieval:
-        annual_project_downloads_df = get_data_from_snowflake(query_annual_project_downloads())
-        annual_unique_users_df = get_data_from_snowflake(query_annual_unique_users())
-        annual_downloads_df = get_data_from_snowflake(query_annual_downloads())
+        annual_project_downloads_df = get_data_from_snowflake(query_annual_project_downloads(selected_year))
+        annual_unique_users_df = get_data_from_snowflake(query_annual_unique_users(selected_year))
+        annual_downloads_df = get_data_from_snowflake(query_annual_downloads(selected_year))
         annual_cost_df = get_data_from_snowflake(query_annual_cost())
 
         # Data transformation:
@@ -58,10 +58,10 @@ def main():
 
         # ---------------- Row 3: Unique Users Trends -------------------------
         
-        st.markdown("#### Download Trends")
+        st.markdown("## Download Trends")
         
         # Data retrieval:
-        unique_users_df = get_data_from_snowflake(query_monthly_download_trends())
+        unique_users_df = get_data_from_snowflake(query_monthly_download_trends(selected_year))
         
         # Data visualization:
         st.plotly_chart(plot_unique_users_trend(unique_users_df))
@@ -74,10 +74,10 @@ def main():
 
         # --------------- Row 1: Top Annotations -------------------------
 
-        st.markdown("#### Top Annotations")
+        st.markdown("## Annotations & Entities")
 
         # Data retrieval:
-        top_annotations_df = get_data_from_snowflake(query_top_annotations())
+        top_annotations_df = get_data_from_snowflake(query_top_annotations(selected_year))
 
         # Data visualization:
         st.dataframe(top_annotations_df,
@@ -104,7 +104,7 @@ def main():
 
         # --------------- Row 2: Entity Distribution -------------------------
 
-        st.markdown("#### Entity Distribution")
+        #st.markdown("#### Entity Distribution")
 
         # Data retrieval:
         entity_distribution_df = get_data_from_snowflake(query_entity_distribution())
@@ -116,7 +116,7 @@ def main():
                  width=None,
                  column_config={
                     "NODE_TYPE": st.column_config.TextColumn(
-                        "Node Type",
+                        "Entity Type",
                     ),
                     "NUMBER_OF_FILES": st.column_config.ProgressColumn(
                         "Occurence",
@@ -128,4 +128,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(selected_year)

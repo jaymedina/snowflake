@@ -1,4 +1,4 @@
-def query_annual_unique_users():
+def query_annual_unique_users(year):
     """Return the number of unique users for a given year."""
 
     return f"""
@@ -21,11 +21,11 @@ def query_annual_unique_users():
     WHERE
         project_id in (SELECT project_id FROM htan_project_ids)
     AND
-        RECORD_DATE >= DATEADD(month, -12, CURRENT_DATE);
+        YEAR(record_date) = {year};
     """
 
 
-def query_annual_downloads():
+def query_annual_downloads(year):
     """Return the annual downloads (in TiB) for a given year."""
 
     return f"""
@@ -50,7 +50,7 @@ def query_annual_downloads():
         WHERE
             project_id in (SELECT project_id FROM htan_project_ids)
         AND
-            record_date >= DATEADD(month, -12, CURRENT_DATE)
+            YEAR(record_date) = {year}
     )
     SELECT
         SUM(content_size) / POWER(1024, 4) as annual_downloads_in_tib
@@ -100,7 +100,7 @@ def query_annual_cost():
     """
 
 
-def query_monthly_download_trends():
+def query_monthly_download_trends(year):
     """Return the monthly download trends for a given year."""
 
     return f"""
@@ -136,7 +136,7 @@ def query_monthly_download_trends():
         ON
             pf.node_id = filedownload.file_handle_id
         WHERE
-            filedownload.TIMESTAMP >= DATEADD(month, -12, CURRENT_DATE)
+            YEAR(filedownload.TIMESTAMP) = {year}
     )
     SELECT
         project_id,
@@ -153,7 +153,7 @@ def query_monthly_download_trends():
     """
 
 
-def query_annual_project_downloads():
+def query_annual_project_downloads(year):
     """Return the annual project downloads for a given year."""
 
     return f"""
@@ -176,7 +176,7 @@ def query_annual_project_downloads():
         WHERE
             project_id in (SELECT project_id FROM htan_project_ids)
         AND
-            record_date >= DATEADD(month, -12, CURRENT_DATE)
+            YEAR(record_date) = {year}
     ),
     total_download_size AS (
         SELECT
@@ -203,6 +203,8 @@ def query_annual_project_downloads():
             nl.file_handle_id = fl.id
         WHERE
             nl.project_id in (SELECT project_id FROM htan_project_ids)
+        AND
+            YEAR(fl.created_on) <= {year}
         GROUP BY
             nl.project_id
     )
@@ -221,8 +223,8 @@ def query_annual_project_downloads():
     """
 
 
-def query_top_annotations():
-    """Return the top annotations for HTAN."""
+def query_top_annotations(year):
+    """Return the top annotations for HTAN for a given year."""
 
     return f"""
     WITH htan_projects AS (
@@ -250,7 +252,7 @@ def query_top_annotations():
         WHERE
             node_latest.annotations:annotations:Component:value[0] IS NOT NULL
         AND
-            filedownload.RECORD_DATE >= DATEADD(month, -12, CURRENT_DATE)
+            YEAR(filedownload.RECORD_DATE) = {year}
     ), component_popularity AS (
         SELECT
             node_latest.annotations:annotations:Component:value[0] as component,
