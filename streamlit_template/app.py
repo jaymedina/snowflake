@@ -29,7 +29,7 @@ with st.sidebar:
     program_list = ["HTAN", "NF"]
     selected_program = st.selectbox("Select a program to view metrics for...", program_list)
 
-    year_list = [2024, 2023, 2022, 2021, 2020, 2019]
+    year_list = [2024, 2023, 2022]
     selected_year = st.selectbox("Select a year to view metrics for...", year_list)
 
     if selected_program == "HTAN":
