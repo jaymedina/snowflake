@@ -6,6 +6,7 @@
     padding-top: 1rem;
     padding-bottom: 0rem;
     margin-bottom: -7rem;
+    box-shadow: 0px 4px 8px rgba(171, 173, 173, 0.793);
 }
 
 [data-testid="stVerticalBlock"] {
@@ -24,6 +25,11 @@
   justify-content: center;
   align-items: center;
 }
+
+[data-testid="stDataFrame"] {
+    box-shadow: 0px 4px 8px rgba(171, 173, 173, 0.793);
+}
+
 
 /* Muted Sage Green for the Sidebar Menu */
 .sidebar {

@@ -1,3 +1,7 @@
+# Package imports are needed to generate the dummy dataframes
+import numpy as np
+import pandas as pd
+
 def query_annual_unique_users(year, program_id):
     """Return the number of unique users for a given year."""
 
@@ -346,3 +350,21 @@ def query_entity_distribution(program_id):
     order by
         number_of_files DESC;
     """
+
+def dummy_get_download_access(program_ids, program_names):
+    # def truncate_name(name, max_length=20):
+    #     return name if len(name) <= max_length else name[:max_length] + "..."
+    # program_names = program_names.apply(truncate_name)
+
+    # Generate arbitrary random download access counts for each program id
+    download_access_count = np.random.randint(1, 1000, size=len(program_ids))
+    
+    # Create a new dataframe with the original program_ids and the new column
+    new_df = pd.DataFrame({
+        'PROJECT_ID': program_ids,
+        'NAME': program_names,
+        'DOWNLOAD_ACCESS_COUNT': download_access_count
+    })
+    
+    return new_df
+
