@@ -100,8 +100,8 @@ def main(selected_year, program_id):
     col1.metric("Total Storage Occupied", f"{total_data_size} TiB")
     col2.metric("Annual Unique Users", f"{annual_unique_users_df['ANNUAL_UNIQUE_USERS'][0]}")
     col3.metric("Annual Downloads", f"{round(annual_downloads_df['ANNUAL_DOWNLOADS_IN_TIB'][0], 2)} TiB")
-    col4.metric("Num. of Citations", "1265")
-    col5.metric("Num. of Records", "7813")
+    col4.metric("Citations (Dummy)", "1265")
+    col5.metric("Records (Dummy)", "7813")
 
     # ---------------- Row 3: Unique Users Trends -------------------------
     
