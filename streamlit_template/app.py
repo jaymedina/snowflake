@@ -51,6 +51,26 @@ def main(selected_year, program_id):
 
     # center_col, side_col = st.columns((4., 2), gap='medium')
 
+    with st.expander("**README** :book:"):
+        st.write("""
+        - This Streamlit app displays metrics showing data usage, governance statistics, data impact in the form of citations, and human records
+      supporting the data over the course of a year for a given DCC.
+    - Several of the widgets in this app were created with dummy data for the sake of demonstration. These widgets are:
+        - The download access dataframe in the **Data Usage** and governance section
+        - The **Data Impact** section
+        - The **About the Data** section
+        - The overview cards corresponding to the last two sections
+    
+                 
+        The rest was pulled in from Snowflake and represents real-time data for the given DCC.
+    - This application is designed to be interactive to help with analysis. Here are some ways you can interact with the widgets:
+        - Use the dropdown menus on the sidebar to select a program and year.
+        - Hover over the charts to see tooltips and more information about the project.
+        - Click on the legend to filter the line chart.
+        - Click the columns in the dataframes to sort the rows according to your preference.
+        - Drag the edges of the columns in the dataframes to adjust their width.
+        """)
+
     # with center_col:
     # --------------- Row 1: Overview Cards -------------------------
 
