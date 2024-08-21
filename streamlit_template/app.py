@@ -166,14 +166,14 @@ def main(selected_year, program_id):
                             "Project Name"
                         ),
                         "DOWNLOAD_ACCESS_COUNT": st.column_config.TextColumn(
-                            "Users with Download Access",
+                            "Users with Download Access (Dummy)",
                         ),}
                      )
         
     data_reach_col, data_impact_col, about_the_data_col = st.columns([2, 1, 1])
 
     with data_reach_col:
-        st.markdown('<h3 class="section-title">Data Reach</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="section-title">Data Reach (Dummy)</h3>', unsafe_allow_html=True)
         
         # Plot the dummy data
         fig = plot_map()
@@ -182,7 +182,7 @@ def main(selected_year, program_id):
         st.plotly_chart(fig)
 
     with data_impact_col:
-        st.markdown('<h3 class="section-title">Data Impact</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="section-title">Data Impact (Dummy)</h3>', unsafe_allow_html=True)
         
         # Plot the dummy data
         fig = plot_citation_stats()
@@ -191,7 +191,7 @@ def main(selected_year, program_id):
         st.plotly_chart(fig)
 
     with about_the_data_col:
-        st.markdown('<h3 class="section-title">About the Data</h3>', unsafe_allow_html=True)
+        st.markdown('<h3 class="section-title">About the Data (Dummy)</h3>', unsafe_allow_html=True)
 
         # Plot the dummy data
         fig = plot_human_records()
