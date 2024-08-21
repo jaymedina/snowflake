@@ -1,3 +1,5 @@
+import random
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -183,3 +185,97 @@ def plot_user_downloads_map(locations, width=10000):
         margin={"r": 0, "t": 0, "l": 0, "b": 0},
     )
     return fig
+
+def plot_citation_stats():
+
+    data = {
+    "Year": ["2022", "2023", "2024"],
+    "Citations": [300, 360, 420]  # Adjusted citation numbers
+    }
+
+    # Create a DataFrame
+    df = pd.DataFrame(data)
+
+    # Convert Year column to string to avoid commas in axis labels
+    df['Year'] = df['Year'].astype(str)
+
+    # Plot the bar chart using Plotly
+    fig = px.bar(df, x="Year", y="Citations", 
+                labels={"Citations": "Number of Citations", "Year": "Year"},
+                title=" ",
+                color_discrete_sequence=["#0f5a5e"])
+
+    # Update x-axis to remove commas
+    fig.update_xaxes(tickformat='d')
+
+    # Customize the chart (optional)
+    fig.update_layout(
+        xaxis_title="Year",
+        yaxis_title="Number of Citations",
+        title_x=0.5  # Center the title
+    )
+
+
+    return fig
+
+def plot_human_records():
+    # Create a dummy dataset
+    data = {
+        'Year': [2022, 2023, 2024],
+        'Number of Records': [500, 750, 900]
+    }
+
+    df = pd.DataFrame(data)
+
+    # Convert Year column to string to avoid commas in axis labels
+    df['Year'] = df['Year'].astype(str)
+
+    # Create a bar chart
+    fig = px.bar(df,
+                 x="Year",
+                 y="Number of Records",
+                 title=" ",
+                 color_discrete_sequence=["#0f5a5e"])
+    
+    # Update x-axis to remove commas
+    fig.update_xaxes(tickformat='d')
+
+    return fig
+
+def plot_map():
+    # Dummy data: Replace with your actual download data
+    # Load a list of all countries using Plotly's built-in data
+    country_list = px.data.gapminder()['country'].unique()
+
+    # Generate random download numbers for each country
+    data = {
+        'Country': country_list,
+        'Downloads': [random.randint(100, 5000) for _ in country_list]
+    }
+
+    df = pd.DataFrame(data)
+
+    # Create a world map using Plotly
+    fig = px.choropleth(
+        df,
+        locations="Country",
+        locationmode="country names",
+        color="Downloads",
+        hover_name="Country",
+        color_continuous_scale="emrld",
+        title=" "
+    )
+    # Update layout to reduce the space between title and chart
+    fig.update_layout(
+        title_x=0.5,
+        title_y=1.,  # Bring the title closer to the chart
+        margin={"r":0,"t":100,"l":0,"b":0},  # Adjust margins to tighten layout
+        coloraxis_colorbar={
+            'title': 'Downloads',
+            'lenmode': 'fraction',
+            'len': 1.,  # Make the color bar 80% of the map's height
+        }
+    )
+
+    return fig
+

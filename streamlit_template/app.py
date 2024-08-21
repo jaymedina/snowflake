@@ -1,5 +1,8 @@
 import os
 
+import pandas as pd
+import plotly.express as px
+
 import numpy as np
 import streamlit as st
 from toolkit.queries import (
@@ -10,10 +13,16 @@ from toolkit.queries import (
     query_monthly_download_trends,
     query_top_annotations,
     query_entity_distribution,
-    dummy_get_download_access
+    dummy_get_download_access,
 )
 from toolkit.utils import get_data_from_snowflake
-from toolkit.widgets import plot_download_sizes, plot_unique_users_trend
+from toolkit.widgets import (
+    plot_download_sizes,
+    plot_unique_users_trend,
+    plot_citation_stats,
+    plot_human_records,
+    plot_map
+)
 
 # Configure the layout of the Streamlit app page
 st.set_page_config(layout="wide",
@@ -53,10 +62,11 @@ def main(selected_year, program_id):
 
     with st.expander("**README** :book:"):
         st.write("""
-        - This Streamlit app displays metrics showing data usage, governance statistics, data impact in the form of citations, and human records
-      supporting the data over the course of a year for a given DCC.
+        - This Streamlit app serves as a dashboard to provide insight on the overall impact and reach of Synapse-hosted data for a given DCC. It displays metrics showing data usage, governance statistics, number of citations, and number of human records
+      supporting the data over the course of a given year, allowing you to compare between years and explore the DCC's evolution on Synapse.
     - Several of the widgets in this app were created with dummy data for the sake of demonstration. These widgets are:
-        - The download access dataframe in the **Data Usage** and governance section
+        - The download access dataframe in the **Data Usage & Governance** section
+        - The **Data Reach** section
         - The **Data Impact** section
         - The **About the Data** section
         - The overview cards corresponding to the last two sections
@@ -160,9 +170,35 @@ def main(selected_year, program_id):
                         ),}
                      )
         
+    data_reach_col, data_impact_col, about_the_data_col = st.columns([2, 1, 1])
 
-    st.markdown("## Data Impact")
-    st.markdown("## About The Data")
+    with data_reach_col:
+        st.markdown('<h3 class="section-title">Data Reach</h3>', unsafe_allow_html=True)
+        
+        # Plot the dummy data
+        fig = plot_map()
+
+        # Display the chart
+        st.plotly_chart(fig)
+
+    with data_impact_col:
+        st.markdown('<h3 class="section-title">Data Impact</h3>', unsafe_allow_html=True)
+        
+        # Plot the dummy data
+        fig = plot_citation_stats()
+
+        # Display the chart
+        st.plotly_chart(fig)
+
+    with about_the_data_col:
+        st.markdown('<h3 class="section-title">About the Data</h3>', unsafe_allow_html=True)
+
+        # Plot the dummy data
+        fig = plot_human_records()
+
+        # Display the chart
+        st.plotly_chart(fig)
+        
 
 
 if __name__ == "__main__":

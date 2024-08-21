@@ -30,6 +30,11 @@
     box-shadow: 0px 4px 8px rgba(171, 173, 173, 0.793);
 }
 
+.section-title {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+
 
 /* Muted Sage Green for the Sidebar Menu */
 .sidebar {
