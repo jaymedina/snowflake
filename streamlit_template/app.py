@@ -73,7 +73,7 @@ def main(selected_year, program_id):
 
         # ---------------- Row 3: Unique Users Trends -------------------------
         
-        st.markdown("## Download Trends")
+        st.markdown("## Data Usage")
         
         # Data retrieval:
         unique_users_df = get_data_from_snowflake(query_monthly_download_trends(selected_year, program_id))
@@ -140,6 +140,10 @@ def main(selected_year, program_id):
                         max_value=max(entity_distribution_df["NUMBER_OF_FILES"]),
                      )}
                  )
+        
+    st.markdown("## Data Governance")
+    st.markdown("## Data Impact")
+    st.markdown("## About The Data")
 
 
 if __name__ == "__main__":
