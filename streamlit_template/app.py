@@ -67,7 +67,7 @@ def main(selected_year, program_id):
         # Data visualization:
         col1, col2, col3 = st.columns([1, 1, 1])
         col1.metric("Total Storage Occupied", f"{total_data_size} TiB")
-        col2.metric("Annual Unique Users", f"{annual_unique_users_df['ANNUAL_UNIQUE_USERS'][0]} TiB")
+        col2.metric("Annual Unique Users", f"{annual_unique_users_df['ANNUAL_UNIQUE_USERS'][0]}")
         col3.metric("Annual Downloads", f"{round(annual_downloads_df['ANNUAL_DOWNLOADS_IN_TIB'][0], 2)} TiB")
         #col4.metric("Annual Cost", f"{round(annual_cost_df['ANNUAL_COST'][0], 2)} USD")
 

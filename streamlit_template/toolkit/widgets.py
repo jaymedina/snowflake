@@ -100,7 +100,7 @@ def plot_download_sizes(df, width=2000):
                 ),
                 hovertemplate="<b>Project Name:</b> %{x}<br>"
                 + "<b>Project ID:</b> %{customdata[0]}<br>"
-                + "<b>Download Size:</b> %{y:.2f} TiB<br>"
+                + "<b>Usage (Downloads):</b> %{y:.2f} TiB<br>"
                 + "<b>Project Size:</b> %{marker.color:.2f} TiB<extra></extra>",
                 customdata=df[["PROJECT_ID"]],
             )
@@ -110,7 +110,7 @@ def plot_download_sizes(df, width=2000):
     # Update the layout of the plot
     fig.update_layout(
         xaxis_title="Project Name",
-        yaxis_title="Download Size (TiB)",
+        yaxis_title="Usage (Downloads in TiB)",
         title="Project Size vs. Download Volumes (in TiB)",
         width=width,
     )
