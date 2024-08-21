@@ -16,7 +16,7 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
     top_projects = grouped_df.sort_values(
         by="DISTINCT_USER_COUNT", ascending=False
     ).head(10)
-
+    
     fig = go.Figure()
     for i, project in zip(top_projects.index, top_projects["PROJECT_ID"]):
 
@@ -24,6 +24,7 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
         filtered_df = unique_users_data[unique_users_data["PROJECT_ID"].isin([project])]
         months = pd.to_datetime(filtered_df["ACCESS_MONTH"])
         counts = filtered_df["DISTINCT_USER_COUNT"]
+        project_name = filtered_df["NAME"].iloc[0]  # Assuming NAME is the same for each project
 
         # Scatter plot for the current project
         fig.add_trace(
@@ -35,7 +36,10 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
                 line=dict(width=2),
                 opacity=0.6,
                 hoverinfo="x+y+name",
-                hovertemplate="<b>Date</b>: %{x}<br><b>Unique User Downloads</b>: %{y}<extra></extra>",
+                hovertemplate="<b>Project Name</b>: " + project_name + "<br>"
+                + "<b>Project ID</b>: " + str(project) + "<br>"
+                + "<b>Date</b>: %{x}<br>"
+                + "<b>Unique User Downloads</b>: %{y}<extra></extra>",
                 showlegend=True,
                 visible=True,
             )
@@ -65,7 +69,7 @@ def plot_unique_users_trend(unique_users_data, width=2000, height=400):
     fig.update_layout(
         xaxis_title="Month",
         yaxis_title="Unique User Downloads",
-        title="Click a project to hide its trend",
+        title="Top 10 Projects by Unique User Downloads",
         width=width,
         height=height,
     )
@@ -77,17 +81,17 @@ def plot_download_sizes(df, width=2000):
     df["PROJECT_SIZE_IN_GIB"] = df["TOTAL_PROJECT_SIZE_IN_TIB"] 
     df["TOTAL_DOWNLOADS_GIB"] = df["ANNUAL_DOWNLOADS_IN_TIB"] 
 
-    # Generate the x-axis labels based on project_id
-    x = [f"project_{str(xx)}" for xx in df["PROJECT_ID"]]
-
     # Sort the DataFrame by total downloads for ordered display
     df = df.sort_values(by="TOTAL_DOWNLOADS_GIB")
+
+    def truncate_name(name, max_length=20):
+        return name if len(name) <= max_length else name[:max_length] + "..."
 
     # Create the bar chart using Plotly
     fig = go.Figure(
         data=[
             go.Bar(
-                x=x,
+                x=df["NAME"].apply(truncate_name),
                 y=df["TOTAL_DOWNLOADS_GIB"],
                 marker=dict(
                     color=df["PROJECT_SIZE_IN_GIB"],
@@ -95,8 +99,10 @@ def plot_download_sizes(df, width=2000):
                     colorbar=dict(title="Project Size (TiB)"),
                 ),
                 hovertemplate="<b>Project Name:</b> %{x}<br>"
+                + "<b>Project ID:</b> %{customdata[0]}<br>"
                 + "<b>Download Size:</b> %{y:.2f} TiB<br>"
                 + "<b>Project Size:</b> %{marker.color:.2f} TiB<extra></extra>",
+                customdata=df[["PROJECT_ID"]],
             )
         ]
     )
@@ -105,7 +111,7 @@ def plot_download_sizes(df, width=2000):
     fig.update_layout(
         xaxis_title="Project Name",
         yaxis_title="Download Size (TiB)",
-        title="Download Size from Unique User Downloads (Ordered)",
+        title="Project Size vs. Download Volumes (in TiB)",
         width=width,
     )
     

@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import streamlit as st
 from toolkit.queries import (
@@ -24,6 +26,11 @@ with open("style.css") as f:
 
 # Setting up the sidebar and interactive user interface
 with st.sidebar:
+    # Load the sage logo
+    logo_path = f"{os.path.dirname(__file__)}/resources/sage-bio-logo.png"
+
+    # Display the sage logo
+    st.sidebar.image(logo_path, use_column_width=True)
     st.title("Sage Internal Data Catalog")
     
     program_list = ["HTAN", "NF"]
@@ -58,11 +65,11 @@ def main(selected_year, program_id):
         total_data_size = round(sum(annual_project_downloads_df['TOTAL_PROJECT_SIZE_IN_TIB']), 2)
 
         # Data visualization:
-        col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+        col1, col2, col3 = st.columns([1, 1, 1])
         col1.metric("Total Storage Occupied", f"{total_data_size} TiB")
         col2.metric("Annual Unique Users", f"{annual_unique_users_df['ANNUAL_UNIQUE_USERS'][0]} TiB")
         col3.metric("Annual Downloads", f"{round(annual_downloads_df['ANNUAL_DOWNLOADS_IN_TIB'][0], 2)} TiB")
-        col4.metric("Annual Cost", f"{round(annual_cost_df['ANNUAL_COST'][0], 2)} USD")
+        #col4.metric("Annual Cost", f"{round(annual_cost_df['ANNUAL_COST'][0], 2)} USD")
 
         # ---------------- Row 3: Unique Users Trends -------------------------
         

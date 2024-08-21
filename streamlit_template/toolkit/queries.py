@@ -137,18 +137,35 @@ def query_monthly_download_trends(year, program_id):
             pf.node_id = filedownload.file_handle_id
         WHERE
             YEAR(filedownload.TIMESTAMP) = {year}
+    ),
+    project_names AS (
+        SELECT
+            name,
+            project_id
+        FROM
+            synapse_data_warehouse.synapse.node_latest
+        WHERE
+            project_id in (SELECT project_id FROM htan_projects)
+        AND
+            node_type = 'project'
     )
     SELECT
-        project_id,
+        file_access.project_id,
+        name,
         access_month,
         COUNT(DISTINCT user_id) AS distinct_user_count
     FROM
         file_access
+    JOIN
+        project_names pn
+    ON
+        file_access.project_id = pn.project_id
     GROUP BY
-        project_id,
+        file_access.project_id,
+        name,
         access_month
     ORDER BY
-        project_id,
+        file_access.project_id,
         access_month;
     """
 
@@ -207,9 +224,21 @@ def query_annual_project_downloads(year, program_id):
             YEAR(fl.created_on) <= {year}
         GROUP BY
             nl.project_id
+    ),
+    project_names AS (
+        SELECT
+            name,
+            project_id
+        FROM
+            synapse_data_warehouse.synapse.node_latest
+        WHERE
+            project_id in (SELECT project_id FROM htan_project_ids)
+        AND
+            node_type = 'project'
     )
     SELECT
-        tds.project_id,
+        tps.project_id,
+        pn.name,
         tds.annual_downloads_in_tib,
         tps.total_project_size_in_tib
     FROM
@@ -218,6 +247,10 @@ def query_annual_project_downloads(year, program_id):
         total_project_size tps
     ON
         tds.project_id = tps.project_id
+    JOIN
+        project_names pn
+    ON
+        tds.project_id = pn.project_id
     ORDER BY
         tds.annual_downloads_in_tib DESC;
     """
