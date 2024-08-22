@@ -190,8 +190,8 @@ def query_annual_project_downloads(year, program_id):
     ),
     file_handle_ids AS (
         SELECT
-            project_id,
-            file_handle_id
+            DISTINCT file_handle_id,
+            project_id
         FROM
             synapse_data_warehouse.synapse.filedownload
         WHERE
