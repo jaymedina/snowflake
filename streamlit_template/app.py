@@ -51,35 +51,40 @@ with st.sidebar:
 
     if selected_program == "HTAN":
         program_id = 20446927
+        program_description = "The Human Tumor Atlas Network ([HTAN](https://humantumoratlas.org/)) is a National Cancer Institute (NCI)-funded Cancer MoonshotSM initiative to construct 3-dimensional atlases of the dynamic cellular, morphological, and molecular features of human cancers as they evolve from precancerous lesions to advanced disease."
     elif selected_program == "NF":
         program_id = 16858331
+        program_description = "The [NF Data Portal](https://nf.synapse.org/) was created to help openly explore and share NF datasets, analysis tools, resources, and publications related to neurofibromatosis and schwannomatosis. Anyone can join the NF Open Science Initiative (NF-OSI) to contribute!"
 
     st.write("For questions or comments, please contact jenny.medina@sagebase.org.")
 
-def main(selected_year, program_id):
+def main(selected_year, program_id, program_description):
 
-    # center_col, side_col = st.columns((4., 2), gap='medium')
+    expander_1, expander_2 = st.columns(2)
+    with expander_1:
+        with st.expander("**README** :book:"):
+            st.write("""
+            - This Streamlit app serves as a dashboard to provide insight on the overall impact and reach of Synapse-hosted data for a given DCC. It displays metrics showing data usage, governance statistics, number of citations, and number of human records
+        supporting the data over the course of a given year, allowing you to compare between years and explore the DCC's evolution on Synapse.
+        - Several of the widgets in this app were created with dummy data for the sake of demonstration. These widgets are:
+            - The download access dataframe in the **Data Usage & Governance** section
+            - The **Data Reach** section
+            - The **Data Impact** section
+            - The **About the Data** section
+            - The overview cards corresponding to the last two sections
 
-    with st.expander("**README** :book:"):
-        st.write("""
-        - This Streamlit app serves as a dashboard to provide insight on the overall impact and reach of Synapse-hosted data for a given DCC. It displays metrics showing data usage, governance statistics, number of citations, and number of human records
-      supporting the data over the course of a given year, allowing you to compare between years and explore the DCC's evolution on Synapse.
-    - Several of the widgets in this app were created with dummy data for the sake of demonstration. These widgets are:
-        - The download access dataframe in the **Data Usage & Governance** section
-        - The **Data Reach** section
-        - The **Data Impact** section
-        - The **About the Data** section
-        - The overview cards corresponding to the last two sections
-    
-                 
-        The rest was pulled in from Snowflake and represents real-time data for the given DCC.
-    - This application is designed to be interactive to help with analysis. Here are some ways you can interact with the widgets:
-        - Use the dropdown menus on the sidebar to select a program and year.
-        - Hover over the charts to see tooltips and more information about the project.
-        - Click on the legend to filter the line chart.
-        - Click the columns in the dataframes to sort the rows according to your preference.
-        - Drag the edges of the columns in the dataframes to adjust their width.
-        """)
+
+            The rest was pulled in from Snowflake and represents real-time data for the given DCC.
+        - This application is designed to be interactive to help with analysis. Here are some ways you can interact with the widgets:
+            - Use the dropdown menus on the sidebar to select a program and year.
+            - Hover over the charts to see tooltips and more information about the project.
+            - Click on the legend to filter the line chart.
+            - Click the columns in the dataframes to sort the rows according to your preference.
+            - Drag the edges of the columns in the dataframes to adjust their width.
+            """)
+    with expander_2:
+        with st.expander("**About The Program**"):
+            st.markdown(program_description)
 
     # with center_col:
     # --------------- Row 1: Overview Cards -------------------------
@@ -202,4 +207,5 @@ def main(selected_year, program_id):
 
 
 if __name__ == "__main__":
-    main(selected_year, program_id)
+    main(selected_year, program_id, program_description)
+
